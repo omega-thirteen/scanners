@@ -4,27 +4,56 @@ from mne.datasets.eegbci import load_data
 from mne.io import read_raw_edf
 
 
-with open('data/channel-names.txt') as f:
-    ch_names = [line.strip() for line in f]
+def load_subject(id_num, runs):
+    '''
+    Loads raw EEG recordings for one subject and at least one run of
+    experiments.
+
+    Arguments:
+        id_num: int, the subject's ID number
+        runs: int or list of ints -- which experiment(s) to read data from
+
+    Returns:
+        MNE Raw object
+
+    '''
+    edf_files = load_data(id_num, runs)
+    raw_objects = [read_raw_edf(file, preload=True) for file in edf_files]
+    mne_raw = concatenate_raws(raw_objects, preload=True)
+    return mne_raw
 
 
-# A montage contains the spatial location of each electrode on an
-# idealized spherical model of the human head.
+def fix_channels(mne_raw):
+    '''
+    Fixes channel names to comply with 'standard_1005' format.
 
-montage = read_montage('standard_1005', ch_names=ch_names)
+    Arguments:
+        mne_raw: MNE Raw object
 
-# First parameter is the subject's ID number; second parameter lists the
-# recording(s) to be loaded. Below, the locations of all three runs of
-# the first experiment are added.
+    Returns:
+        MNE Raw object
+    '''
+    with open('data/channel-names.txt') as f:
+        ch_names = [line.strip() for line in f]
 
-edf_files = load_data(1, [3, 7, 11])
+    renamer = {old: new for old, new in zip(mne_raw.ch_names[:-1], ch_names)}
+    mne_raw.rename_channels(renamer)
+    return mne_raw
 
-raw_objects = [read_raw_edf(file, preload=True) for file in edf_files]
 
-raw = concatenate_raws(raw_objects, preload=True)
+def add_montage(mne_raw):
+    '''
+    Creates 'standard_1005' montage with corrected channel names and
+    adds it to MNE raw object.
 
-# Channel names do not follow standard practice in original EDF files.
+    Arguments:
+        mne_raw: MNE Raw object
 
-renamer = {old: new for old, new in zip(raw.ch_names[:-1], ch_names)}
-raw.rename_channels(renamer)
-raw.set_montage(montage)
+    Returns:
+        MNE Raw object
+    '''
+    with open('data/channel-names.txt') as f:
+        ch_names = [line.strip() for line in f]
+
+    montage = read_montage('standard_1005', ch_names=ch_names)
+    mne_raw.set_montage(montage)
