@@ -17,27 +17,30 @@ def load_subject(id_num, runs):
         MNE Raw object
     '''
     edf_files = load_data(id_num, runs)
-    raw_objects = [read_raw_edf(file, preload=True) for file in edf_files]
-    mne_raw = concatenate_raws(raw_objects, preload=True)
+    if len(edf_files) > 1:
+        raw_objects = [read_raw_edf(file, preload=True) for file in edf_files]
+        mne_raw = concatenate_raws(raw_objects, preload=True)
+    else:
+        mne_raw = read_raw_edf(edf_files[0], preload=True)
     return mne_raw
 
 
 def fix_channels(mne_raw):
     '''
-    Fixes channel names to comply with 'standard_1005' format.
-
+    1) Fixes channel names to comply with 'standard_1005' format.
+    2) Fixes stimulus channel type.
     Arguments:
         mne_raw: MNE Raw object
 
     Returns:
-        MNE Raw object
+        MNE Raw object (modified in place)
     '''
     with open('data/channel-names.txt') as f:
         ch_names = [line.strip() for line in f]
 
     renamer = {old: new for old, new in zip(mne_raw.ch_names[:-1], ch_names)}
     mne_raw.rename_channels(renamer)
-    return mne_raw
+    mne_raw.set_channel_types({'STI 014': 'stim'})
 
 
 def add_montage(mne_raw):
@@ -49,7 +52,7 @@ def add_montage(mne_raw):
         mne_raw: MNE Raw object
 
     Returns:
-        MNE Raw object
+        MNE Raw object (modified in place)
     '''
     with open('data/channel-names.txt') as f:
         ch_names = [line.strip() for line in f]
