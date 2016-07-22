@@ -15,7 +15,6 @@ def load_subject(id_num, runs):
 
     Returns:
         MNE Raw object
-
     '''
     edf_files = load_data(id_num, runs)
     raw_objects = [read_raw_edf(file, preload=True) for file in edf_files]
