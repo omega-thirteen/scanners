@@ -1,1 +1,2 @@
 http://perso.telecom-paristech.fr/~gramfort/mne/MRC/8-decoding_multivariate_statistics.html
+https://www.kaggle.com/alexandrebarachant/grasp-and-lift-eeg-detection/common-spatial-pattern-with-mne/
