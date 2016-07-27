@@ -14,7 +14,12 @@ runs = [3, 7, 11]
 tmax = 0.5
 tmin = -0.2
 
+# EDF files for subjects 88, 89, 92, 100 have overlapping events, which
+# read_raw_edf() cannot handle.
+
 for num in range(begin, end):
+    if num in {88, 89, 92, 100}:
+        continue
     for run in runs:
         raw = pr.load_subject(num, run)
         pr.fix_channels(raw)
