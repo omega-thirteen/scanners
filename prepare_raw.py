@@ -4,6 +4,9 @@ from mne.datasets.eegbci import load_data
 from mne.io import read_raw_edf
 
 
+# EDF files for subjects 88, 89, 92, 100 have overlapping events, which
+# read_raw_edf() cannot handle.
+
 def load_subject(id_num, runs):
     '''
     Loads raw EEG recordings for one subject and at least one run of
@@ -35,7 +38,7 @@ def fix_channels(mne_raw):
     Returns:
         MNE Raw object (modified in place)
     '''
-    with open('data/channel-names.txt') as f:
+    with open('data/misc/channel-names.txt') as f:
         ch_names = [line.strip() for line in f]
 
     renamer = {old: new for old, new in zip(mne_raw.ch_names[:-1], ch_names)}
@@ -54,7 +57,7 @@ def add_montage(mne_raw):
     Returns:
         MNE Raw object (modified in place)
     '''
-    with open('data/channel-names.txt') as f:
+    with open('data/misc/channel-names.txt') as f:
         ch_names = [line.strip() for line in f]
 
     montage = read_montage('standard_1005', ch_names=ch_names)
