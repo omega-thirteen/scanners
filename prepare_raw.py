@@ -28,7 +28,7 @@ def load_subject(id_num, runs):
     return mne_raw
 
 
-def fix_channels(mne_raw):
+def fix_channels(mne_raw, channels='data/misc/channel-names.txt'):
     '''
     1) Fixes channel names to comply with 'standard_1005' format.
     2) Fixes stimulus channel type.
@@ -38,15 +38,13 @@ def fix_channels(mne_raw):
     Returns:
         MNE Raw object (modified in place)
     '''
-    with open('data/misc/channel-names.txt') as f:
-        ch_names = [line.strip() for line in f]
-
+    ch_names = open(channels).read().splitlines()
     renamer = {old: new for old, new in zip(mne_raw.ch_names[:-1], ch_names)}
     mne_raw.rename_channels(renamer)
     mne_raw.set_channel_types({'STI 014': 'stim'})
 
 
-def add_montage(mne_raw):
+def add_montage(mne_raw, channels='data/misc/channel-names.txt'):
     '''
     Creates 'standard_1005' montage with corrected channel names and
     adds it to MNE raw object.
@@ -57,8 +55,6 @@ def add_montage(mne_raw):
     Returns:
         MNE Raw object (modified in place)
     '''
-    with open('data/misc/channel-names.txt') as f:
-        ch_names = [line.strip() for line in f]
-
+    ch_names = open(channels).read().splitlines()
     montage = read_montage('standard_1005', ch_names=ch_names)
     mne_raw.set_montage(montage)
