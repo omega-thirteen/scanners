@@ -41,3 +41,20 @@ for num in range(begin, end):
                         picks=None, baseline=baseline, preload=True)
         filename = splitext(raw.info['filename'])[0]
         epochs.save(filename + '-epo.fif')
+
+# The following block collects all epochs into an HDF5 file:
+#
+# from glob import glob
+# epoch_files = sorted(glob('**/*-epo.fif', recursive=True))
+#
+# for f in epoch_files:
+#     df = mne.read_epochs(f,
+#                          proj=False,
+#                          preload=True).to_data_frame(index='epoch')
+#     df.rename(columns={'STI 014': 'event'}, inplace=True)
+#     df.to_hdf('data/misc/store.h5',
+#               'epochs',
+#               format='t',
+#               append=True,
+#               complib='blosc',
+#               complevel=9)
