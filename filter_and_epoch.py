@@ -1,13 +1,15 @@
 #!/usr/bin/env python
 
-import prepare_raw as pr
+from prepare_raw import add_montage, fix_channels, load_subject
 from mne import find_events, Epochs
 from mne.preprocessing import ICA
-
+from os.path import splitext
 from numpy.random import RandomState
+
 
 # 'runs' selects which versions of the experiment to epoch. Available
 # choices are: [3, 7, 11], [4, 8, 12], [5, 9, 13], and [6, 10, 14]
+
 baseline = None
 begin = int(input('Enter first subject: '))
 end = int(input('Enter last subject: '))
@@ -24,9 +26,9 @@ for num in range(begin, end):
     if num in {88, 89, 92, 100}:
         continue
     for run in runs:
-        raw = pr.load_subject(num, run)
-        pr.fix_channels(raw)
-        pr.add_montage(raw)
+        raw = load_subject(num, run)
+        fix_channels(raw)
+        add_montage(raw)
         # Band-pass filter to capture the relevant signal (alpha and
         # beta ranges). Butterworth filter is implied by method='iir'
         # with iir_params=None or left out.
@@ -37,4 +39,5 @@ for num in range(begin, end):
         events = find_events(raw, consecutive=False)
         epochs = Epochs(raw, events, event_id, tmin, tmax, proj=False,
                         picks=None, baseline=baseline, preload=True)
-        epochs.save('{}-epo.fif'.format(raw.info['filename'][:-4]))
+        filename = splitext(raw.info['filename'])[0]
+        epochs.save(filename + '-epo.fif')
