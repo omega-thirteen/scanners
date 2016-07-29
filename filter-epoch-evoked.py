@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from mne import find_events, Epochs
+from mne import find_events, Epochs, write_evokeds
 from mne.preprocessing import ICA
 from multiprocessing import cpu_count
 from numpy.random import RandomState
@@ -31,28 +31,40 @@ for num in range(begin, end):
         raw = load_subject(num, run)
         fix_channels(raw)
         add_montage(raw)
+
         # Band-pass filter to capture the relevant signal (alpha and
         # beta ranges). Butterworth filter is implied by method='iir'
         # with iir_params=None or left out.
+
         raw.filter(7.0, 30.0, method='iir', n_jobs=n_cores)
         ica = ICA(n_components=0.95, random_state=random_state)
         ica.fit(raw, decim=3)
         ica.apply(raw)
         events = find_events(raw, consecutive=False)
-        epochs = Epochs(raw, events, event_id, tmin, tmax, proj=False,
-                        picks=None, baseline=baseline, preload=True)
+        epochs = Epochs(raw,
+                        events,
+                        event_id,
+                        tmin,
+                        tmax,
+                        baseline=baseline,
+                        picks=None,
+                        preload=True,
+                        proj=False,
+                        reject=dict(eeg=80e-6))
+        evoked_avg = [epochs[cond].average() for cond in ['left_fist',
+                                                          'right_fist']]
         filename = splitext(raw.info['filename'])[0]
         epochs.save(filename + '-epo.fif')
-
+        write_evokeds(filename + '-ave.fif', evoked_avg)
 # The following block collects all epochs into an HDF5 file:
-#
+
 # from glob import glob
 # epoch_files = sorted(glob('**/*-epo.fif', recursive=True))
-#
+
 # for f in epoch_files:
 #     df = mne.read_epochs(f,
 #                          proj=False,
-#                          preload=True).to_data_frame(index='epoch')
+#                          preload=True).to_data_frame(index=None)
 #     df.rename(columns={'STI 014': 'event'}, inplace=True)
 #     df.to_hdf('data/misc/store.h5',
 #               'epochs',
