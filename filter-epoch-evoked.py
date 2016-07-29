@@ -49,8 +49,7 @@ for num in range(begin, end):
                         baseline=baseline,
                         picks=None,
                         preload=True,
-                        proj=False,
-                        reject=dict(eeg=80e-6))
+                        proj=False)
         evoked_avg = [epochs[cond].average() for cond in ['left_fist',
                                                           'right_fist']]
         filename = splitext(raw.info['filename'])[0]
