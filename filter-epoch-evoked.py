@@ -32,8 +32,8 @@ for num in range(begin, end):
         fix_channels(raw)
         add_montage(raw)
 
-        # Band-pass filter to capture the relevant signal (alpha and
-        # beta ranges). Butterworth filter is implied by method='iir'
+        # Band-pass filter to capture the relevant signal (alpha, beta,
+        # and mu ranges). Butterworth filter is implied by method='iir'
         # with iir_params=None or left out.
 
         raw.filter(7.0, 30.0, method='iir', n_jobs=n_cores)
@@ -55,19 +55,3 @@ for num in range(begin, end):
         filename = splitext(raw.info['filename'])[0]
         epochs.save(filename + '-epo.fif')
         write_evokeds(filename + '-ave.fif', evoked_avg)
-# The following block collects all epochs into an HDF5 file:
-
-# from glob import glob
-# epoch_files = sorted(glob('**/*-epo.fif', recursive=True))
-
-# for f in epoch_files:
-#     df = mne.read_epochs(f,
-#                          proj=False,
-#                          preload=True).to_data_frame(index=None)
-#     df.rename(columns={'STI 014': 'event'}, inplace=True)
-#     df.to_hdf('data/misc/store.h5',
-#               'epochs',
-#               format='t',
-#               append=True,
-#               complib='blosc',
-#               complevel=9)
