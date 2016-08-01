@@ -1,6 +1,6 @@
 from glob import glob
 from mne import read_epochs, read_evokeds
-
+import numpy as np
 
 # The following block collects all epochs into an HDF5 file:
 
@@ -29,7 +29,11 @@ for f in evoked_files:
                           kind='average',
                           proj=False,
                           verbose=None).to_data_frame(index=None)
-        df.rename(columns={'STI 014': 'event'}, inplace=True)
+        if cond == 'left_fist':
+            df['response'] = np.zeros(df.shape[0])
+        else:
+            df['response'] = np.ones(df.shape[0])
+        df.reset_index(inplace=True)
         df.to_hdf('data/misc/evokeds.h5',
                   'evokeds',
                   format='t',
