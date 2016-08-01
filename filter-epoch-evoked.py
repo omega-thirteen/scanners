@@ -22,7 +22,7 @@ tmax = 0.5
 tmin = -0.2
 
 with open('data/misc/channel-names.txt') as f:
-    ch_names = f.read().splitlines()[:14]
+    ch_names = f.read().splitlines()[:14] + ['STI 014']
 
 # EDF files for subjects 88, 89, 92, 100 have overlapping events, which
 # read_raw_edf() cannot handle.
