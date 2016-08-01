@@ -133,11 +133,13 @@ Mean validation score: 0.499 (std: 0.002)
 Parameters: {'n_iter': 18, 'alpha': 0.1495637472206022, 'shuffle': False}
 ```
 
-It's plain to see that the classifier is performing no better than
-chance (a score of approximately 50%). I suspect this stems from the
-format of the input data. MNE provides an EpochsVectorizer class that,
-as the name suggests, reduces the dimensions of each epoch. Thus far I
-have not been able to make it work as expected.
+It's plain to see that the classifier is performing no better
+than chance (a score of approximately 50%). I suspect this
+stems from the format of the input data. MNE provides an
+[EpochsVectorizer](mne-tools.github.io/stable/generated/mne.decoding.Epo
+chsVectorizer.html) class that, as the name suggests, reduces the
+dimensions of each epoch. Thus far I have not been able to make it work
+as expected.
 
 
 ## Download
