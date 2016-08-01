@@ -21,6 +21,9 @@ runs = [3, 7, 11]
 tmax = 0.5
 tmin = -0.2
 
+with open('data/misc/channel-names.txt') as f:
+    ch_names = f.read().splitlines()[:14]
+
 # EDF files for subjects 88, 89, 92, 100 have overlapping events, which
 # read_raw_edf() cannot handle.
 
@@ -31,6 +34,7 @@ for num in range(begin, end):
         raw = load_subject(num, run)
         fix_channels(raw)
         add_montage(raw)
+        raw.pick_channels(ch_names)
 
         # Band-pass filter to capture the relevant signal (alpha, beta,
         # and mu ranges). Butterworth filter is implied by method='iir'
@@ -47,7 +51,6 @@ for num in range(begin, end):
                         tmin,
                         tmax,
                         baseline=baseline,
-                        picks=picks,
                         preload=True,
                         proj=False)
         evoked_avg = [epochs[cond].average() for cond in ['left_fist',
