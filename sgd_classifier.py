@@ -1,6 +1,3 @@
-from glob import glob
-from mne import read_epochs
-from mne.decoding import EpochsVectorizer
 from multiprocessing import cpu_count
 from operator import itemgetter
 from scipy.stats import lognorm
