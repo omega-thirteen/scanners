@@ -6,6 +6,7 @@ from multiprocessing import cpu_count
 from numpy.random import RandomState
 from os.path import splitext
 from prepare_raw import add_montage, fix_channels, load_subject
+import numpy as np
 
 
 # 'runs' selects which versions of the experiment to epoch. Available
@@ -16,6 +17,7 @@ begin = int(input('Enter first subject: '))
 end = int(input('Enter last subject: '))
 event_id = dict(left_fist=2, right_fist=3)
 n_cores = cpu_count()
+picks = np.array(range(14)) # First 14 channels are 'C*' and 'FC*'
 random_state = RandomState(42)
 runs = [3, 7, 11]
 tmax = 0.5
@@ -47,7 +49,7 @@ for num in range(begin, end):
                         tmin,
                         tmax,
                         baseline=baseline,
-                        picks=None,
+                        picks=picks,
                         preload=True,
                         proj=False)
         evoked_avg = [epochs[cond].average() for cond in ['left_fist',
