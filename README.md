@@ -141,8 +141,10 @@ have not been able to make it work as expected.
 
 
 ## Download
-```$ git clone https://github.com/omega-thirteen/scanners.git
+```
+$ git clone https://github.com/omega-thirteen/scanners.git
 ```
 or, using your SSH key:
-```$ git clone git@github.com:omega-thirteen/scanners.git
+```
+$ git clone git@github.com:omega-thirteen/scanners.git
 ```
