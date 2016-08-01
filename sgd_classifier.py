@@ -1,3 +1,6 @@
+from glob import glob
+from mne import read_epochs
+from mne.decoding import EpochsVectorizer
 from multiprocessing import cpu_count
 from operator import itemgetter
 from scipy.stats import lognorm
@@ -8,6 +11,7 @@ from sklearn.linear_model import SGDClassifier
 from sklearn.preprocessing import StandardScaler
 from time import time
 import numpy as np
+import pandas as pd
 
 
 # Utility function to report best scores (borrowed from
@@ -27,6 +31,11 @@ def report(grid_scores, n_top=3):
 random_state = np.random.RandomState(42)
 n_cores = cpu_count()
 
+df = pd.read_hdf('data/misc/evokeds.h5', key='evokeds')
+
+X = df[df.columns[1:15]]
+y = df['response']
+
 X_train, X_test, y_train, y_test = train_test_split(X,
                                                     y,
                                                     test_size=0.2,
@@ -36,7 +45,7 @@ scaler = StandardScaler()
 scaler.fit(X_train)
 X_train = scaler.transform(X_train)
 X_test = scaler.transform(X_test)
-pipe = Pipeline(estimators)
+
 sgd = SGDClassifier(average=True,
                     class_weight=None,
                     fit_intercept=False,
@@ -46,7 +55,7 @@ sgd = SGDClassifier(average=True,
                     penalty='l2',
                     random_state=random_state,
                     verbose=0)
-#                     fit_intercept=True,
+
 param_dist = {'alpha': lognorm(s=2, scale=np.exp(-4)),
               'n_iter': randint(5, 26),
               'shuffle': [True, False]}
@@ -57,7 +66,7 @@ n_iter_search = 20
 random_search = RandomizedSearchCV(sgd,
                                    param_distributions=param_dist,
                                    n_iter=n_iter_search)
-#                     warm_start=False)
+
 start = time()
 random_search.fit(X_train, y_train)
 print("RandomizedSearchCV took %.2f seconds for %d candidates"
