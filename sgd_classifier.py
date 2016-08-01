@@ -2,10 +2,11 @@ from multiprocessing import cpu_count
 from operator import itemgetter
 from scipy.stats import lognorm
 from scipy.stats import randint
+from sklearn.cross_validation import train_test_split
+from sklearn.grid_search import RandomizedSearchCV
 from sklearn.linear_model import SGDClassifier
-from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
-import matplotlib.pyplot as plt
+from time import time
 import numpy as np
 
 
