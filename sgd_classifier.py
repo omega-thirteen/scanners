@@ -1,5 +1,5 @@
 from multiprocessing import cpu_count
-from sklearn.decomposition import FastICA
+from operator import itemgetter
 from scipy.stats import lognorm
 from scipy.stats import randint
 from sklearn.linear_model import SGDClassifier
@@ -7,6 +7,20 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
 import numpy as np
+
+
+# Utility function to report best scores (borrowed from
+# http://scikit-learn.org/stable/_downloads/randomized_search.py)
+
+def report(grid_scores, n_top=3):
+    top_scores = sorted(grid_scores, key=itemgetter(1), reverse=True)[:n_top]
+    for i, score in enumerate(top_scores):
+        print("Model with rank: {0}".format(i + 1))
+        print("Mean validation score: {0:.3f} (std: {1:.3f})".format(
+              score.mean_validation_score,
+              np.std(score.cv_validation_scores)))
+        print("Parameters: {0}".format(score.parameters))
+        print("")
 
 
 random_state = np.random.RandomState(42)
@@ -43,3 +57,8 @@ random_search = RandomizedSearchCV(sgd,
                                    param_distributions=param_dist,
                                    n_iter=n_iter_search)
 #                     warm_start=False)
+start = time()
+random_search.fit(X_train, y_train)
+print("RandomizedSearchCV took %.2f seconds for %d candidates"
+      " parameter settings." % ((time() - start), n_iter_search))
+report(random_search.grid_scores_)
