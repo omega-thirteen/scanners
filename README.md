@@ -43,11 +43,13 @@ interfaces](http://en.wikipedia.org/wiki/Brain-computer_interface#Non-invasive_B
 
 ## Separating wheat from chaff
 Easy and cheap to obtain though they may be, EEG recordings do have
-inherent drawbacks. For one, the noise-to-signal ratio is uncomfortably
-high, and artifacts are difficult to avoid: electrical interference,
-both endogenous (heartbeat, eye movement, changes in skin conductivity
-due to sweating) and exogenous (AC power mains), can make interpretation
-of recordings difficult or impossible.
+[inherent drawbacks](http://en.wikipedia.org/wiki/Electroencephalography#/Limitations). 
+For one, the noise-to-signal ratio is uncomfortably high, and 
+[artifacts](http://en.wikipedia.org/wiki/Electroencephalography#/Artifacts) 
+are difficult to avoid: electrical interference, both endogenous
+(heartbeat, eye movement, changes in skin conductivity due to sweating)
+and exogenous (AC power mains), can make interpretation of recordings
+difficult or impossible.
 
 Fortunately, these problems can be substantially mitigated with
 the aid of certain mathematical techniques. Low-pass and high-pass
