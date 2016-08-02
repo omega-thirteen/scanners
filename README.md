@@ -83,11 +83,11 @@ ICA can reliably reproduce those signals.
 In their initial continuous form, EEG recordings are
 not suitable ground on which to build a predictive
 algorithm. The stream must be sectioned into
-[epochs](http://en.wikipedia.org/wiki/Quantitative_electroencephalograph
-y#Fourier_analysis_of_EEG), time-locked series which contain the
-event of interest. Like-kind epochs can then be averaged across
-multiple recordings and compared between and among experimental
-subjects. These averages are known in the literature as [event-related
+[epochs](http://en.wikipedia.org/wiki/Quantitative_electroencephalography#Fourier_analysis_of_EEG), 
+time-locked series which contain the event of interest.
+Like-kind epochs can then be averaged across multiple recordings
+and compared between and among experimental subjects. These
+averages are known in the literature as [event-related
 potentials](http://en.wikipedia.org/wiki/Event-related_potential).
 
 ## Classification procedure
@@ -108,12 +108,10 @@ After packaging the data in a compatible form using
 [MNE](http://mne-tools.github.io/stable/index.html) and standardizing
 each feature, I divided them into training and testing sets
 (80% and 20%, respectively) and then employed scikit-learn's
-[SGDClassifier](http://scikit-learn.org/stable/modules/generated/sklearn
-.linear_model.SGDClassifier.html), specifying
-one of two applicable loss functions and
-[RandomizedSearchCV](http://scikit-learn.org/stable/modules/generated/sk
-learn.grid_search.RandomizedSearchCV.html) to tune parameters for the
-classifier.
+[SGDClassifier](http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.SGDClassifier.html), 
+specifying one of two applicable loss functions and
+[RandomizedSearchCV](http://scikit-learn.org/stable/modules/generated/sklearn.grid_search.RandomizedSearchCV.html) 
+to tune parameters for the classifier.
 
 Here are the results produced by SGDClassifier with 'hinge' loss
 function, which gives a linear support vector machine:
@@ -136,10 +134,9 @@ Parameters: {'n_iter': 18, 'alpha': 0.1495637472206022, 'shuffle': False}
 It's plain to see that the classifier is performing no better
 than chance (a score of approximately 50%). I suspect this
 stems from the format of the input data. MNE provides an
-[EpochsVectorizer](http://mne-tools.github.io/stable/generated/mne.decod
-ing.EpochsVectorizer.html) class that, as the name suggests, reduces the
-dimensions of each epoch. Thus far I have not been able to make it work
-as expected.
+[EpochsVectorizer](http://mne-tools.github.io/stable/generated/mne.decoding.EpochsVectorizer.html) 
+class that, as the name suggests, reduces the dimensions of each epoch.
+Thus far I have not been able to make it work as expected.
 
 
 ## Download
