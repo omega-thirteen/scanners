@@ -3,19 +3,22 @@ Scanners
 Predicting motion based on electroencephalographic recordings (EEG).
 
 ## Introduction
-The electroencephalograph, or EEG, is a common medical device first
-developed to diagnose and monitor brain disorders such as epilepsy.
-To record brain activity, up to 128 electrodes are affixed to the
-patient's scalp at standardized points. When large numbers of neurons
-below an electrode fire in unison, the difference in electric potential
-(measured in microvolts) is registered between that electrode and a
-reference electrode, which is usually attached to one or both earlobes.
-The EEG can be administered while the patient performs simple tasks --
-moving arms or legs, observing images on a screen, listening to music
--- or even while he or she is asleep. The EEG's notable advantages,
-those being its low cost and minimally invasive nature, lend it
-to applications beyond the hospital setting. The nascent field of
-brain-computer interfaces (BCI) is one such application.
+The [electroencephalograph](http://en.wikipedia.org/wiki/Electroencephalography), 
+or EEG, is a common medical device first developed to diagnose and
+monitor neurological disorders such as epilepsy. To record brain
+activity, up to 128 electrodes are affixed to the patient's scalp at
+[standardized points](http://en.wikipedia.org/wiki/10-20_system_\(EEG\)). 
+When large numbers of neurons below an electrode fire in unison, the
+difference in electric potential (measured in microvolts) is registered
+between that electrode and a reference electrode, which is usually
+attached to one or both earlobes. The EEG can be administered while the
+patient performs simple tasks -- moving arms or legs, observing images
+on a screen, listening to music -- or even while he or she is asleep.
+The EEG's notable advantages, those being its low cost and minimally
+invasive nature, lend it to applications beyond the hospital setting.
+The nascent field of [brain-computer
+interfaces](http://en.wikipedia.org/wiki/Brain-computer_interface#Non-invasive_BCIs) 
+(BCI) is one such application.
 
 ## Dataset
 [EEG Motor Movement/Imagery Dataset](https://physionet.org/pn4/eegmmidb/), or EEGMMIDB, from [PhysioNet](https://physionet.org):
@@ -42,9 +45,9 @@ brain-computer interfaces (BCI) is one such application.
 Easy and cheap to obtain though they may be, EEG recordings do have
 inherent drawbacks. For one, the noise-to-signal ratio is uncomfortably
 high, and artifacts are difficult to avoid: electrical interference,
-both endogenous (heartbeat, eye movement, changes in conductivity due
-to sweating) and exogenous (AC power mains), can make interpretation of
-recordings difficult or impossible.
+both endogenous (heartbeat, eye movement, changes in skin conductivity
+due to sweating) and exogenous (AC power mains), can make interpretation
+of recordings difficult or impossible.
 
 Fortunately, these problems can be substantially mitigated with
 the aid of certain mathematical techniques. Low-pass and high-pass
@@ -113,8 +116,9 @@ specifying one of two applicable loss functions, and
 [RandomizedSearchCV](http://scikit-learn.org/stable/modules/generated/sklearn.grid_search.RandomizedSearchCV.html) 
 to tune parameters for the classifier.
 
-Here are the results produced by SGDClassifier with 'hinge' loss
-function, which gives a linear support vector machine:
+Here are the results produced by SGDClassifier with ['hinge' loss
+function](http://en.wikipedia.org/wiki/Hinge_loss), which gives a linear
+support vector machine:
 
 ```
 RandomizedSearchCV took 12.69 seconds for 20 candidate parameter settings.
