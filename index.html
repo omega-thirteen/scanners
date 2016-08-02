@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <title>Scanners by omega-thirteen</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>Scanners</h1>
+        <h2>A machine-learning project involving EEG recordings</h2>
+        <a href="https://github.com/omega-thirteen/scanners" class="button"><small>View project on</small> GitHub</a>
+      </div>
+    </header>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h1>
+<a id="scanners" class="anchor" href="#scanners" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Scanners</h1>
+
+<p>Predicting motion based on electroencephalographic recordings (EEG).</p>
+
+<h2>
+<a id="introduction" class="anchor" href="#introduction" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Introduction</h2>
+
+<p>The <a href="http://en.wikipedia.org/wiki/Electroencephalography">electroencephalograph</a>, 
+or EEG, is a common medical device first developed to diagnose and
+monitor neurological disorders such as epilepsy. To record brain
+activity, up to 128 electrodes are affixed to the patient's scalp at
+<a href="http://en.wikipedia.org/wiki/10-20_system_(EEG)">standardized points</a>. 
+When large numbers of neurons below an electrode fire in unison, the
+difference in electric potential (measured in microvolts) is registered
+between that electrode and a reference electrode, which is usually
+attached to one or both earlobes. The EEG can be administered while the
+patient performs simple tasks -- moving arms or legs, observing images
+on a screen, listening to music -- or even while he or she is asleep.
+The EEG's notable advantages, those being its low cost and minimally
+invasive nature, lend it to applications beyond the hospital setting.
+The nascent field of <a href="http://en.wikipedia.org/wiki/Brain-computer_interface#Non-invasive_BCIs">brain-computer
+interfaces</a> 
+(BCI) is one such application.</p>
+
+<h2>
+<a id="dataset" class="anchor" href="#dataset" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Dataset</h2>
+
+<p><a href="https://physionet.org/pn4/eegmmidb/">EEG Motor Movement/Imagery Dataset</a>, or EEGMMIDB, from <a href="https://physionet.org">PhysioNet</a>:</p>
+
+<blockquote>
+<p>Subjects performed different motor/imagery tasks while 64-channel EEG
+were recorded using the <a href="http://www.bci2000.org">BCI2000 system</a>. Each
+subject performed 14 experimental runs: two one-minute baseline runs
+(one with eyes open, one with eyes closed), and three two-minute runs
+of each of the four following tasks: A target appears on either the
+left or the right side of the screen. The subject opens and closes
+the corresponding fist until the target disappears. Then the subject
+relaxes. A target appears on either the left or the right side of the
+screen. The subject imagines opening and closing the corresponding fist
+until the target disappears. Then the subject relaxes. A target appears
+on either the top or the bottom of the screen. The subject opens and
+closes either both fists (if the target is on top) or both feet (if the
+target is on the bottom) until the target disappears. Then the subject
+relaxes. A target appears on either the top or the bottom of the screen.
+The subject imagines opening and closing either both fists (if the
+target is on top) or both feet (if the target is on the bottom) until
+the target disappears. Then the subject relaxes.</p>
+</blockquote>
+
+<h2>
+<a id="separating-wheat-from-chaff" class="anchor" href="#separating-wheat-from-chaff" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Separating wheat from chaff</h2>
+
+<p>Easy and cheap to obtain though they may be, EEG recordings do have
+inherent drawbacks. For one, the noise-to-signal ratio is uncomfortably
+high, and artifacts are difficult to avoid: electrical interference,
+both endogenous (heartbeat, eye movement, changes in skin conductivity
+due to sweating) and exogenous (AC power mains), can make interpretation
+of recordings difficult or impossible.</p>
+
+<p>Fortunately, these problems can be substantially mitigated with
+the aid of certain mathematical techniques. Low-pass and high-pass
+<a href="http://en.wikipedia.org/wiki/Butterworth_filter">filters</a> were
+applied to the raw signal at 30 Hz and 7 Hz, respectively, to
+remove high-frequency noise (including that produced by <a href="http://en.wikipedia.org/wiki/Mains_electricity">mains
+electricity</a> at 60
+Hz) as well as low-frequency artifacts caused by heartbeat and eye
+movement. Conveniently, the band from 7-30 Hz is likely to carry
+all the information we seek: normal, waking neural oscillations
+are dominated by <a href="http://en.wikipedia.org/wiki/Alpha_wave">alpha</a>
+and <a href="http://en.wikipedia.org/wiki/Beta_wave">beta</a> waves. More
+to the point, motor activity is typically marked by activity
+within the <a href="http://en.wikipedia.org/wiki/Mu_wave">mu band</a>,
+from 7.5-12.5 Hz. While one is at rest, neurons in the <a href="http://en.wikipedia.org/wiki/Motor_cortex">motor
+cortex</a> tend to fire in
+unison. At the onset of motion, however, these neurons' activity becomes
+desynchronized, and therein lies the key to successful prediction.</p>
+
+<p><a href="http://en.wikipedia.org/wiki/Independent_component_analysis">Independent component
+analysis</a>
+(the <a href="http://en.wikipedia.org/wiki/FastICA">FastICA implementation</a>,
+to be specific) was then performed to achieve <a href="http://en.wikipedia.org/wiki/Blind_signal_separation">signal
+separation</a>.
+Why is this necessary? Imagine you have placed three microphones in
+a room where a lively cocktail party is being held. With multiple
+conversations occurring simultaneously, each microphone is bound
+to pick up at least some of the sound captured by the other two.
+If one can safely assume that the component signals (the voices
+of individual people at the cocktail party) are <a href="http://en.wikipedia.org/wiki/Statistical_independence">statistically
+independent</a> and
+that the component signals' values are not normally distributed, then
+ICA can reliably reproduce those signals.</p>
+
+<h2>
+<a id="crossing-the-streams" class="anchor" href="#crossing-the-streams" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Crossing the streams</h2>
+
+<p>In their initial continuous form, EEG recordings are
+not suitable ground on which to build a predictive
+algorithm. The stream must be sectioned into
+<a href="http://en.wikipedia.org/wiki/Quantitative_electroencephalography#Fourier_analysis_of_EEG">epochs</a>, 
+time-locked series which contain the event of interest.
+Like-kind epochs can then be averaged across multiple recordings
+and compared between and among experimental subjects. These
+averages are known in the literature as <a href="http://en.wikipedia.org/wiki/Event-related_potential">event-related
+potentials</a>.</p>
+
+<h2>
+<a id="classification-procedure" class="anchor" href="#classification-procedure" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Classification procedure</h2>
+
+<p>At this early stage, I have limited the scope of my project to the first
+version of the experiments found in EEGMMIDB, in which each subject was
+instructed to clench the corresponding fist when an image appeared on
+either the left or right side of a screen.</p>
+
+<p>From the recordings of 109 subjects who participated in the
+experiment, four sets were removed from the dataset because of
+formatting discrepancies. Those remaining were divided into epochs
+(200 milliseconds before the event and 500 milliseconds after).
+Only the fourteen electrodes located above the <a href="http://en.wikipedia.org/wiki/Primary_motor_cortex">primary motor
+cortex</a> were used in
+this context.</p>
+
+<p>After packaging the data in a compatible form using
+<a href="http://mne-tools.github.io/stable/index.html">MNE</a> and standardizing
+each feature, I divided them into training and testing sets
+(80% and 20%, respectively) and then employed scikit-learn's
+<a href="http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.SGDClassifier.html">SGDClassifier</a>, 
+specifying one of two applicable loss functions, and
+<a href="http://scikit-learn.org/stable/modules/generated/sklearn.grid_search.RandomizedSearchCV.html">RandomizedSearchCV</a> 
+to tune parameters for the classifier.</p>
+
+<p>Here are the results produced by SGDClassifier with <a href="http://en.wikipedia.org/wiki/Hinge_loss">'hinge' loss
+function</a>, which gives a linear
+support vector machine:</p>
+
+<pre><code>RandomizedSearchCV took 12.69 seconds for 20 candidate parameter settings.
+Model with rank: 1
+Mean validation score: 0.499 (std: 0.002)
+Parameters: {'n_iter': 9, 'alpha': 17.884975133166026, 'shuffle': True}
+
+Model with rank: 2
+Mean validation score: 0.499 (std: 0.002)
+Parameters: {'n_iter': 10, 'alpha': 0.12765806765435153, 'shuffle': False}
+
+Model with rank: 3
+Mean validation score: 0.499 (std: 0.002)
+Parameters: {'n_iter': 18, 'alpha': 0.1495637472206022, 'shuffle': False}
+</code></pre>
+
+<p>It's plain to see that the classifier is performing no better
+than chance (a score of approximately 50%). I suspect this
+stems from the format of the input data. MNE provides an
+<a href="http://mne-tools.github.io/stable/generated/mne.decoding.EpochsVectorizer.html">EpochsVectorizer</a> 
+class that, as the name suggests, reduces the dimensions of each epoch.
+Thus far I have not been able to make it work as expected.</p>
+
+<h2>
+<a id="download" class="anchor" href="#download" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Download</h2>
+
+<pre><code>$ git clone https://github.com/omega-thirteen/scanners.git
+</code></pre>
+
+<p>or, using your SSH key:</p>
+
+<pre><code>$ git clone git@github.com:omega-thirteen/scanners.git
+</code></pre>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/omega-thirteen/scanners/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/omega-thirteen/scanners/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/omega-thirteen/scanners"></a> is maintained by <a href="https://github.com/omega-thirteen">omega-thirteen</a>.</p>
+
+          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
+    </div>
+
+  
+  </body>
+</html>
