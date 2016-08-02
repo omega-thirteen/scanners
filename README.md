@@ -109,7 +109,7 @@ After packaging the data in a compatible form using
 each feature, I divided them into training and testing sets
 (80% and 20%, respectively) and then employed scikit-learn's
 [SGDClassifier](http://scikit-learn.org/stable/modules/generated/sklearn.linear_model.SGDClassifier.html), 
-specifying one of two applicable loss functions and
+specifying one of two applicable loss functions, and
 [RandomizedSearchCV](http://scikit-learn.org/stable/modules/generated/sklearn.grid_search.RandomizedSearchCV.html) 
 to tune parameters for the classifier.
 
