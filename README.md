@@ -101,7 +101,7 @@ experiment, four sets were removed from the dataset because of
 formatting discrepancies. Those remaining were divided into epochs
 (200 milliseconds before the event and 500 milliseconds after).
 Only the fourteen electrodes located above the [primary motor
-cortex](http://en.wikipedia.org/wiki/Primary_motor_cortex), were used in
+cortex](http://en.wikipedia.org/wiki/Primary_motor_cortex) were used in
 this context.
 
 After packaging the data in a compatible form using
@@ -119,7 +119,7 @@ Here are the results produced by SGDClassifier with 'hinge' loss
 function, which gives a linear support vector machine:
 
 ```
-RandomizedSearchCV took 12.69 seconds for 20 candidates parameter settings.
+RandomizedSearchCV took 12.69 seconds for 20 candidate parameter settings.
 Model with rank: 1
 Mean validation score: 0.499 (std: 0.002)
 Parameters: {'n_iter': 9, 'alpha': 17.884975133166026, 'shuffle': True}
@@ -136,8 +136,8 @@ Parameters: {'n_iter': 18, 'alpha': 0.1495637472206022, 'shuffle': False}
 It's plain to see that the classifier is performing no better
 than chance (a score of approximately 50%). I suspect this
 stems from the format of the input data. MNE provides an
-[EpochsVectorizer](mne-tools.github.io/stable/generated/mne.decoding.Epo
-chsVectorizer.html) class that, as the name suggests, reduces the
+[EpochsVectorizer](http://mne-tools.github.io/stable/generated/mne.decod
+ing.EpochsVectorizer.html) class that, as the name suggests, reduces the
 dimensions of each epoch. Thus far I have not been able to make it work
 as expected.
 
